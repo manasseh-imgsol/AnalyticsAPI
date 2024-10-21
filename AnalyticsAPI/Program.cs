@@ -1,16 +1,28 @@
 using AnalyticsAPI.Analytics;
 using AnalyticsAPI.Analytics.Services;
+using AnalyticsAPI.Analytics.Database;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<AnalyticsService>();
+
+// Configure DbContextFactory
+builder.Services.AddDbContextFactory<AnalyticsDbContext>(options =>
+{
+    // Assuming you're using SQLite. If not, adjust this line accordingly.
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+// Register AnalyticsService as Singleton
+builder.Services.AddSingleton<AnalyticsService>();
+
+// Keep your existing AddSqliteDB if it's doing additional configuration
 builder.Services.AddSqliteDB();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -21,14 +33,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 app.UseRouting();
 app.MapFallbackToFile("index.html");
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

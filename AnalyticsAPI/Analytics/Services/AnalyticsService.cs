@@ -1,17 +1,18 @@
 ﻿using AnalyticsAPI.Analytics.Database;
 using AnalyticsAPI.Analytics.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AnalyticsAPI.Analytics.Services
 {
     public class AnalyticsService
     {
-        private readonly AnalyticsDbContext _context;
+        private readonly IDbContextFactory<AnalyticsDbContext> _contextFactory;
         private readonly ApiLoggingQueueService _loggingQueue;
 
-        public AnalyticsService(AnalyticsDbContext context, int batchSize = 3, int maxBatchWaitMs = 5000)
+        public AnalyticsService(IDbContextFactory<AnalyticsDbContext> contextFactory, int batchSize = 3, int maxBatchWaitMs = 5000)
         {
-            _context = context;
+            _contextFactory = contextFactory;
             _loggingQueue = new ApiLoggingQueueService(batchSize, maxBatchWaitMs, ProcessBatchAsync);
         }
 
@@ -25,29 +26,25 @@ namespace AnalyticsAPI.Analytics.Services
                 IsSuccess = isSuccess,
                 TokensUsed = tokensUsed
             };
-
-            //_context.RequestLogs.Add(logEntry);
-            //await _context.SaveChangesAsync();
-
             LogSuccessfulApiHit(logEntry);
         }
 
-        // Batch save for request logs
         private async Task ProcessBatchAsync(IEnumerable<RequestLog> batch)
         {
-            await _context.RequestLogs.AddRangeAsync(batch);
-            await _context.SaveChangesAsync();
+            using var context = await _contextFactory.CreateDbContextAsync();
+            await context.RequestLogs.AddRangeAsync(batch);
+            await context.SaveChangesAsync();
         }
 
         public void LogSuccessfulApiHit(RequestLog logEntry)
         {
-            // Enqueue the log entry to the logging queue
             _loggingQueue.LogSuccessfulApiHit(logEntry);
         }
 
         public async Task<object> GetRequestLogs()
         {
-            var requests = await _context.RequestLogs.ToListAsync();
+            using var context = await _contextFactory.CreateDbContextAsync();
+            var requests = await context.RequestLogs.ToListAsync();
             return requests;
         }
     }
