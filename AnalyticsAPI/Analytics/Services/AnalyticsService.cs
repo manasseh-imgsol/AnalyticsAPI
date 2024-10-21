@@ -10,7 +10,7 @@ namespace AnalyticsAPI.Analytics.Services
         private readonly IDbContextFactory<AnalyticsDbContext> _contextFactory;
         private readonly ApiLoggingQueueService _loggingQueue;
 
-        public AnalyticsService(IDbContextFactory<AnalyticsDbContext> contextFactory, int batchSize = 3, int maxBatchWaitMs = 5000)
+        public AnalyticsService(IDbContextFactory<AnalyticsDbContext> contextFactory, int batchSize = 3, int maxBatchWaitMs = 300000)
         {
             _contextFactory = contextFactory;
             _loggingQueue = new ApiLoggingQueueService(batchSize, maxBatchWaitMs, ProcessBatchAsync);

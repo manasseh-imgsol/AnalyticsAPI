@@ -1,202 +1,223 @@
 ﻿@page "/"
+@using AnalyticsUI.Services
+@inject AnalyticsService AnalyticsService
 
 <PageTitle>Home</PageTitle>
 
-
 <i class="fa fa-home"></i>
 
-    <header class="">
-        <br>
-        <nav class="container mx-auto navbar-container">
-            <div class="navbar-content">
-                <a href="#" class="flex items-center mr-6">
-                    <i class="fas fa-chart-bar text-indigo-600 text-2xl mr-2"></i>
-                    <span class="text-xl font-bold logo-text">OCR Dashboard</span>
-                </a>
-                <button class="login-button text-white px-4 py-2 rounded-full flex items-center space-x-2 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-sm">
-                    <i class="fas fa-user-circle"></i>
-                    <span>Log In</span>
-                </button>
-            </div>
-        </nav>
-    </header>
- 
-    <main class="container mx-auto px-6 py-8">
-        <!-- Top Section -->
-        <!-- <section class="mb-12">
-            <div class="bg-gradient text-white rounded-lg p-6 custom-shadow">
-                <h2 class="text-2xl font-bold mb-4">Welcome to OCR Dashboard Management</h2>
-                <div class="flex items-center space-x-4">
-                    <input type="text" placeholder="Enter API key" class="w-full p-2 border border-gray-300 rounded-md text-gray-800">
-                    <button class="bg-white text-indigo-600 px-6 py-2 rounded-md hover:bg-gray-100 transition duration-300">
-                        <i class="fas fa-plus mr-2"></i>Add
-                    </button>
-                </div>
-            </div>
-        </section> -->
- 
-        <!-- New Top Section If user is not admin-->
-        <section class="top-section text-white p-6 mb-12">
-            <h2 class="text-3xl font-bold mb-4">Welcome to OCR Dashboard Management</h2>
-            <div class="notice p-4 rounded-r-lg">
-                <div class="flex items-center">
-                    <i class="fas fa-exclamation-triangle text-yellow-300 text-2xl mr-3"></i>
-                    <div>
-                        <h3 class="font-semibold text-lg">Important Notice</h3>
-                        <p>You have <span class="font-bold text-yellow-300">50 tokens</span> remaining. Please recharge soon to ensure uninterrupted service.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
- 
-        <!-- Middle Section with Analytics Cards -->
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <!-- Card 1: Total Hit Count -->
-            <div class="bg-white p-6 rounded-lg custom-shadow card-hover">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-800">Total API Hit Count</h3>
-                    <i class="fas fa-server text-2xl text-indigo-600"></i>
-                </div>
-                <p class="text-3xl font-bold text-gray-800">1,234</p>
-                <p class="text-sm text-gray-600 mt-2">+5.3% from last week</p>
-            </div>
- 
-            <!-- Card 2: Tokens Used and Remaining -->
-            <div class="bg-white p-6 rounded-lg custom-shadow card-hover">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-800">Token Usage</h3>
-                    <i class="fas fa-coins text-2xl text-indigo-600"></i>
-                </div>
-                <div class="space-y-2">
-                    <p class="text-lg font-bold text-gray-800">Used: 1,000</p>
-                    <p class="text-lg font-bold text-gray-800">Remaining: 500</p>
-                </div>
-                <div class="mt-4 bg-gray-200 rounded-full h-2.5">
-                    <div class="bg-indigo-600 h-2.5 rounded-full" style="width: 66%"></div>
-                </div>
-            </div>
- 
-            <!-- Card 3: Token Limits -->
-            <div class="bg-white p-6 rounded-lg custom-shadow card-hover">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-800">Total Token Limit</h3>
-                    <i class="fas fa-chart-pie text-2xl text-indigo-600"></i>
-                </div>
-                <p class="text-3xl font-bold text-gray-800">1,500</p>
-                <p class="text-sm text-gray-600 mt-2">Upgrade for more tokens</p>
-            </div>
-        </section>
- 
- 
-        <!-- Bottom Section with Bar Graph -->
-        <section class="bg-white p-6 rounded-lg custom-shadow">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-xl font-semibold text-gray-800">Weekly Endpoint Hits and Token Usage</h3>
-                <div class="flex items-center space-x-2">
-                    <label for="year-select" class="text-gray-700">Year:</label>
-                    <select id="year-select" class="p-2 border rounded-md bg-gray-50">
-                        <!-- Years will be populated by JavaScript -->
-                    </select>
-                    <label for="month-select" class="text-gray-700">Month:</label>
-                    <select id="month-select" class="p-2 border rounded-md bg-gray-50">
-                        <!-- Months will be populated by JavaScript -->
-                    </select>
-                    <label for="week-select" class="text-gray-700">Week:</label>
-                    <select id="week-select" class="p-2 border rounded-md bg-gray-50">
-                        <!-- Weeks will be populated by JavaScript -->
-                    </select>
-                </div>
-            </div>
- 
-            <!-- Chart container -->
-            <div class="w-full h-96">
-                <MudChart ChartType="ChartType.Bar" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="350px"></MudChart>
-            </div>
-        </section>
-    </main>
- 
-    <footer class="bg-gray-800 text-white py-6 mt-12">
-        <div class="container mx-auto px-6 text-center">
-            <p>&copy; 2024 OCR Dashboard. All rights reserved.</p>
+<header class="">
+    <br>
+    <nav class="container mx-auto navbar-container">
+        <div class="navbar-content">
+            <a href="#" class="flex items-center mr-6">
+                <i class="fas fa-chart-bar text-indigo-600 text-2xl mr-2"></i>
+                <span class="text-xl font-bold logo-text">OCR Dashboard</span>
+            </a>
+            <button class="login-button text-white px-4 py-2 rounded-full flex items-center space-x-2 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-sm">
+                <i class="fas fa-user-circle"></i>
+                <span>Log In</span>
+            </button>
         </div>
-    </footer>
+    </nav>
+</header>
 
+<main class="container mx-auto px-6 py-8">
+    <!-- New Top Section If user is not admin-->
+    <section class="top-section text-white p-6 mb-12">
+        <h2 class="text-3xl font-bold mb-4">Welcome to OCR Dashboard Management</h2>
+        <div class="notice p-4 rounded-r-lg">
+            <div class="flex items-center">
+                <i class="fas fa-exclamation-triangle text-yellow-300 text-2xl mr-3"></i>
+                <div>
+                    <h3 class="font-semibold text-lg">Important Notice</h3>
+                    <p>You have <span class="font-bold text-yellow-300">@remainingTokens tokens</span> remaining. Please recharge soon to ensure uninterrupted service.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Middle Section with Analytics Cards -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <!-- Card 1: Total Hit Count -->
+        <div class="bg-white p-6 rounded-lg custom-shadow card-hover">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-800">Total API Hit Count</h3>
+                <i class="fas fa-server text-2xl text-indigo-600"></i>
+            </div>
+            <p class="text-3xl font-bold text-gray-800">@totalHitCount</p>
+            <p class="text-sm text-gray-600 mt-2">+5.3% from last week</p>
+        </div>
+
+        <!-- Card 2: Tokens Used and Remaining -->
+        <div class="bg-white p-6 rounded-lg custom-shadow card-hover">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-800">Token Usage</h3>
+                <i class="fas fa-coins text-2xl text-indigo-600"></i>
+            </div>
+            <div class="space-y-2">
+                <p class="text-lg font-bold text-gray-800">Used: @totalTokensUsed</p>
+                <p class="text-lg font-bold text-gray-800">Remaining: @remainingTokens</p>
+            </div>
+            <div class="mt-4 bg-gray-200 rounded-full h-2.5">
+                <div class="bg-indigo-600 h-2.5 rounded-full" style="width: @progressPercentage%"></div>
+            </div>
+        </div>
+
+        <!-- Card 3: Token Limits -->
+        <div class="bg-white p-6 rounded-lg custom-shadow card-hover">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-800">Total Token Limit</h3>
+                <i class="fas fa-chart-pie text-2xl text-indigo-600"></i>
+            </div>
+            <p class="text-3xl font-bold text-gray-800">@totalTokenLimit</p>
+            <p class="text-sm text-gray-600 mt-2">Upgrade for more tokens</p>
+        </div>
+    </section>
+
+    <!-- Bottom Section with Bar Graph -->
+    <section class="bg-white p-6 rounded-lg custom-shadow">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-semibold text-gray-800">Weekly Endpoint Hits and Token Usage</h3>
+        </div>
+
+        <!-- Chart container -->
+        <div class="w-full h-96">
+            <MudChart ChartType="ChartType.Bar" ChartSeries="@Series" XAxisLabels="@XAxisLabels" Width="100%" Height="350px"></MudChart>
+        </div>
+    </section>
+</main>
+
+<footer class="bg-gray-800 text-white py-6 mt-12">
+    <div class="container mx-auto px-6 text-center">
+        <p>&copy; 2024 OCR Dashboard. All rights reserved.</p>
+    </div>
+</footer>
 
 
 <style>
     /* .bg-gradient {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-.card-hover:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-}
-.custom-shadow {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-} */
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+    .custom-shadow {
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    } */
 
-.bg-gradient {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-.card-hover:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-}
-.custom-shadow {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-}
-.login-button {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    transition: all 0.3s ease;
-}
-.login-button:hover {
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-    transform: translateY(-2px);
-}
-.navbar-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 70px;
-}
-.navbar-content {
-    display: flex;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0.9);
-    padding: 0.5rem 1.5rem;
-    border-radius: 50px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-}
-.logo-text {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-fill-color: transparent;
-}
+    .bg-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
 
-.top-section {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 15px;
-    overflow: hidden;
-}
-.notice {
-    background-color: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(5px);
-    border-left: 4px solid #fbbf24;
-}
+    .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .custom-shadow {
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    .login-button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        transition: all 0.3s ease;
+    }
+
+        .login-button:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transform: translateY(-2px);
+        }
+
+    .navbar-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 70px;
+    }
+
+    .navbar-content {
+        display: flex;
+        align-items: center;
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 0.5rem 1.5rem;
+        border-radius: 50px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    .logo-text {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
+    }
+
+    .top-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .notice {
+        background-color: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(5px);
+        border-left: 4px solid #fbbf24;
+    }
 </style>
 
 @code {
-    private int Index = -1; //default value cannot be 0 -> first selectedindex is 0.
+    private List<RequestLog> requestLogs;
+    private int totalHitCount = 0;
+    private int totalTokensUsed = 0;
+    private int remainingTokens = 0;
+    private const int totalTokenLimit = 15000;
+    private double progressPercentage = 0;
 
-    public List<ChartSeries> Series = new List<ChartSeries>()
+    // For MudBlazor chart
+    public List<ChartSeries> Series = new List<ChartSeries>();
+    public string[] XAxisLabels = new string[7]; // Labels for the X axis
+
+    protected override async Task OnInitializedAsync()
     {
-        new ChartSeries() { Name = "United States", Data = new double[] { 40, 20, 25, 27, 46, 60, 48, 80, 15 } },
-        new ChartSeries() { Name = "Germany", Data = new double[] { 19, 24, 35, 13, 28, 15, 13, 16, 31 } },
-        new ChartSeries() { Name = "Sweden", Data = new double[] { 8, 6, 11, 13, 4, 16, 10, 16, 18 } },
-    };
-    public string[] XAxisLabels = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep" };
+        try
+        {
+            // Call the service to get request logs
+            requestLogs = await AnalyticsService.GetRequestLogsAsync();
+
+            // Process data
+            totalHitCount = requestLogs.Count();
+            totalTokensUsed = requestLogs.Sum(r => r.TokensUsed);
+            remainingTokens = totalTokenLimit - totalTokensUsed;
+
+            // Update progress bar for token usage
+            progressPercentage = (double)totalTokensUsed / totalTokenLimit * 100;
+
+            // Update chart data for hits and token usage (for example, using the last 7 entries)
+            XAxisLabels = requestLogs
+            .GroupBy(r => r.Timestamp.ToString("MMM dd HH:00"))
+            .Select(g => g.Key)
+            .ToArray();
+
+            Series = new List<ChartSeries>()
+            {
+                new ChartSeries()
+                {
+                    Name = "Requests",
+                    Data = requestLogs
+                        .GroupBy(r => r.Timestamp.ToString("MMM dd HH:00"))
+                        .Select(g => (double)g.Count()) // Cast count to double
+                        .ToArray()
+                }
+            };
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching request logs: {ex.Message}");
+        }
+    }
 }
